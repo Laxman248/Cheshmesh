@@ -13,8 +13,8 @@ from PIL import Image
 # CONFIG - ithe tumche 2 secret codes ani names set kara
 # ============================================================
 ACCESS_CODES = {
-    "rahul247x": "Rahul",     # tumcha code + naav
-    "priya931z": "Priya",     # tumcha friend cha code + naav
+    "khadus": "Khadus",     # tumcha code + naav
+    "pagal": "pagal",     # tumcha friend cha code + naav
 }
 
 CHAT_FILE = "chat_data.json"
