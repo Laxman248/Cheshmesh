@@ -738,15 +738,82 @@ chat_html += "</div>"
 
 st.markdown(chat_html, unsafe_allow_html=True)
 
-# auto-scroll to the latest message
+# ------------------------------------------------------------
+# AUTO-SCROLL - always show the newest message
+# Works after initial load, refresh, incoming message and send.
+# ------------------------------------------------------------
 components.html(
     """
     <script>
-        try {
-            const doc = window.parent.document;
-            const box = doc.getElementById('chat-window-box');
-            if (box) { box.scrollTop = box.scrollHeight; }
-        } catch (e) {}
+    (() => {
+        const parentDoc = window.parent.document;
+
+        const scrollToLatest = () => {
+            try {
+                const box = parentDoc.getElementById("chat-window-box");
+                if (!box) return false;
+
+                // Multiple passes handle Streamlit's async DOM rendering.
+                const doScroll = () => {
+                    box.scrollTop = box.scrollHeight;
+                };
+
+                doScroll();
+                requestAnimationFrame(doScroll);
+                setTimeout(doScroll, 60);
+                setTimeout(doScroll, 180);
+                setTimeout(doScroll, 350);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        };
+
+        // Try repeatedly because Streamlit can render the markdown container
+        // a little after the component itself is mounted.
+        let tries = 0;
+        const timer = setInterval(() => {
+            tries += 1;
+            if (scrollToLatest() || tries >= 50) {
+                clearInterval(timer);
+            }
+        }, 100);
+
+        // When new messages are inserted/updated, jump to the bottom again.
+        const observerTimer = setInterval(() => {
+            try {
+                const box = parentDoc.getElementById("chat-window-box");
+                if (!box) return;
+
+                clearInterval(observerTimer);
+
+                let lastHeight = box.scrollHeight;
+
+                const observer = new MutationObserver(() => {
+                    const newHeight = box.scrollHeight;
+                    if (newHeight !== lastHeight) {
+                        lastHeight = newHeight;
+                        scrollToLatest();
+                    }
+                });
+
+                observer.observe(box, {
+                    childList: true,
+                    subtree: true,
+                    characterData: true
+                });
+
+                // Also handle image layout finishing after the message is rendered.
+                box.querySelectorAll("img").forEach((img) => {
+                    img.addEventListener("load", scrollToLatest, { once: true });
+                });
+            } catch (e) {}
+        }, 100);
+
+        // Extra fallback for browser/keyboard viewport changes.
+        window.addEventListener("load", scrollToLatest, { once: true });
+        window.addEventListener("resize", () => setTimeout(scrollToLatest, 80));
+    })();
     </script>
     """,
     height=0,
