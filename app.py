@@ -13,7 +13,7 @@ from PIL import Image
 # CONFIG - ithe tumche 2 secret codes ani names set kara
 # ============================================================
 ACCESS_CODES = {
-    "khadus": "Khadus",     # tumcha code + naav
+    "baby": "Khadus",     # tumcha code + naav
     "pagal": "pagal",     # tumcha friend cha code + naav
 }
 
