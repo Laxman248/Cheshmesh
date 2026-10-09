@@ -271,7 +271,7 @@ with st.form("send_form", clear_on_submit=True):
     with col1:
         photo = st.file_uploader("img", type=["png", "jpg", "jpeg"], label_visibility="collapsed")
     with col2:
-        new_msg = st.text_input("msg", label_visibility="collapsed", placeholder="Type a message...", key="message_input", on_change=update_typing_status)
+        new_msg = st.text_input("msg", label_visibility="collapsed", placeholder="Type a message...", key="message_input")
     with col3:
         send = st.form_submit_button("S")
 
