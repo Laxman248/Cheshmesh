@@ -14,7 +14,7 @@ from PIL import Image
 # ============================================================
 ACCESS_CODES = {
     "baby": "Khadus",     # tumcha code + naav
-    "pagal": "pagal",     # tumcha friend cha code + naav
+    "undraa": "pagal",     # tumcha friend cha code + naav
 }
 
 CHAT_FILE = "chat_data.json"
